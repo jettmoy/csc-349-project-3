@@ -1,3 +1,10 @@
+/*
+    Andrew Exton - aexton
+    Jett Moy - jlmoy
+    November 2nd, 2018
+    ALGORITHMS - Project 3 Part 2
+*/
+
 import java.util.*;
 import java.io.*;
 import java.lang.*;
@@ -51,6 +58,7 @@ public class GameProblem {
 
     private static void find_optimal_solution(int n, int m, int[][] A) {
 
+        // corner base case
         S[n][m] = A[n][m];
         R[n][m] = 'e';
         
@@ -82,10 +90,8 @@ public class GameProblem {
 
         for (int i=n-1; i>0; i--) {
             for (int j=m-1; j>0; j--) {
-
                 // check whats better -> move down OR right
                 // max{𝑆[𝑖+1, 𝑗],𝑆[𝑖,𝑗+1]}+𝐴[𝑖,𝑗]
-
                 if (S[i + 1][j] >= S[i][j + 1]) {
                     S[i][j] = S[i + 1][j] + A[i][j];
                     R[i][j] = 'd';
@@ -96,11 +102,6 @@ public class GameProblem {
 
             }
         }
-
-        // print_2d_int_array(A);
-        // print_2d_int_array(S);
-        // print_2d_char_array(R);
-
     }
 
     private static void print_optimal_score() {
@@ -109,7 +110,7 @@ public class GameProblem {
         for (int i=0; i<S.length; i++) {
             for (int j=0; j<S[0].length; j++) {
                 if (S[i][j] > optimalScore) {
-                    solX = j; // i think?
+                    solX = j;
                     solY = i;
                     optimalScore = S[i][j];
                 } 
@@ -119,14 +120,6 @@ public class GameProblem {
         System.out.println("Best score: " + optimalScore);
     }
 
-    /*
-     * To be able to track the rout, you need to define an auxiliary table R:
-     * in each R[i,j] cell you will save info about the choice made in computing the
-     * value of respective S[i,j]
-     * 
-     * – e.g. you can save “d” if the choice is to move
-     * down, “r” if the choice is to move right, and “e” if you have to exit.
-     */
     private static void print_optimal_route(int n, int m, int[][] A) {
 
         int i = solY;
@@ -150,23 +143,5 @@ public class GameProblem {
             }
         }
 
-    }
-
-    private static void print_2d_int_array(int[][] A) {
-        for (int i = 0; i < A.length; i++) {
-            for (int j = 0; j < A[0].length; j++) {
-                System.out.print(A[i][j] + " ");
-            }
-            System.out.println();
-        }
-    }
-
-    private static void print_2d_char_array(char[][] A) {
-        for (int i = 0; i < A.length; i++) {
-            for (int j = 0; j < A[0].length; j++) {
-                System.out.print(A[i][j] + " ");
-            }
-            System.out.println();
-        }
     }
 }
