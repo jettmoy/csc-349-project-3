@@ -52,33 +52,52 @@ public class GameProblem {
     private static void find_optimal_solution(int n, int m, int[][] A) {
 
         S[n][m] = A[n][m];
+        R[n][m] = 'e';
         
         // build last column solutions
         // last column -> move down OR exit
         // max{𝑆[𝑖+1, 𝑚],0}+𝐴[𝑖,𝑚]
         for (int i=m-1; i > 0; i--) {
-            S[i][m] = Math.max(S[i + 1][m], 0) + A[i][m];
+            if (S[i+1][m] >= 0) {
+                S[i][m] = S[i + 1][m] + A[i][m];
+                R[i][m] = 'd';
+            } else {
+                S[i][m] = A[i][m];
+                R[i][m] = 'e';
+            }
         }
 
         // build last row solutions
         // last row -> move right OR exit
         // max{𝑆[𝑛,𝑗+1],0}+𝐴[𝑛,𝑗]
         for (int j=n-1; j>0; j--) {
-            S[n][j] = Math.max(S[n][j + 1], 0) + A[n][j];
+            if (S[n][j+1] >= 0) {
+                S[n][j] = S[n][j + 1] + A[n][j];
+                R[n][j] = 'r';
+            } else {
+                S[n][j] = A[n][j];
+                R[n][j] = 'e';
+            }
         }
-
-        print_2d_int_array(S);
 
         for (int i=n-1; i>0; i--) {
             for (int j=m-1; j>0; j--) {
 
                 // check whats better -> move down OR right
                 // max{𝑆[𝑖+1, 𝑗],𝑆[𝑖,𝑗+1]}+𝐴[𝑖,𝑗]
-                S[i][j] = Math.max(S[i + 1][j], S[i][j + 1]) + A[i][j];
+
+                if (S[i + 1][j] >= S[i][j + 1]) {
+                    S[i][j] = S[i + 1][j] + A[i][j];
+                    R[i][j] = 'd';
+                } else {
+                    S[i][j] = S[i][j + 1] + A[i][j];
+                    R[i][j] = 'r';
+                }
 
             }
         }
 
+        print_2d_int_array(A);
         print_2d_int_array(S);
 
     }
@@ -111,24 +130,25 @@ public class GameProblem {
 
         int i = solY;
         int j = solX;
-        
-        while (i<m && j<m) {
-            int previousValue = S[i][j] - A[i][j];
 
-            if (previousValue == S[i+1][j]) {
-                // downward move
-                System.out.print("d ");
-                i++;
+        while (i<=m+1 || j<=m+1) {
+            char move = R[i][j];
+
+            switch(move) {
+                case 'd':
+                    System.out.printf("[%d,%d] to ", i, j);
+                    i++;
+                    break;
+                case 'r':
+                    System.out.printf("[%d,%d] to ", i, j);
+                    j++;
+                    break;
+                case 'e':
+                    System.out.println("exit");
+                    return;
             }
-
-            if (previousValue == S[i][j+1]) {
-                // right move
-                System.out.print("r ");
-                j++;
-            }
-
         }
-        System.out.print("e ");
+
     }
 
     private static void print_2d_int_array(int[][] A) {
