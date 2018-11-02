@@ -49,6 +49,9 @@ public class GameProblem {
     static int solY = -1;
     public static void game(int n, int m, int[][] A) {
         S = new int[n + 1][m + 1];
+        for (int i = 0; i < n + 1; i++) {
+            Arrays.fill(S[i], Integer.MIN_VALUE);
+        }
         R = new char[n + 1][m + 1];
         find_optimal_solution(n, m, A);
         print_optimal_score();
@@ -125,7 +128,7 @@ public class GameProblem {
         int i = solY;
         int j = solX;
 
-        while (i<=m+1 || j<=m+1) {
+        while (i<=m || j<=m) {
             char move = R[i][j];
 
             switch(move) {
@@ -140,6 +143,9 @@ public class GameProblem {
                 case 'e':
                     System.out.printf("[%d,%d] to exit\n", i, j);
                     return;
+                default:
+                    return;
+
             }
         }
 
