@@ -9,17 +9,6 @@ import java.util.*;
 import java.io.*;
 
 public class FactoryProblem {
-   static class Solution {
-      int fC, lC;
-      int[] l1, l2;
-
-      public Solution(int fC, int lC, int[] l1, int[] l2) {
-         this.fC = fC;
-         this.lC = lC;
-         this.l1 = l1;
-         this.l2 = l2;
-      }
-   }
 
    public static void main(String args[]) {
 
@@ -50,10 +39,10 @@ public class FactoryProblem {
             a2[i] = scanner.nextInt();
 
          // check if one station - edge case
-         if (!scanner.hasNextInt()) {
-            Solution s = fastestTime(a1, a2, null, null, e, x, n); // won't enter for loop in fastestTime func (calculates entry + station + exit time)
+         if (n == 1) {
+            Solution s = fastestTime(a1, a2, null, null, e, x, n); // won't enter for loop in fastestTime func (will just compute entry + station + exit time)
             int[] route = calcOptimalRoute(s, n);
-            printOptimalSol(n, s.fC, route);
+            printOptimalSol(n, s.f_, route);
             System.exit(0);
          }
 
@@ -69,25 +58,40 @@ public class FactoryProblem {
          // CALCULATE OPTIMAL SOLUTION
          Solution s = fastestTime(a1, a2, t1, t2, e, x, n);
          int[] route = calcOptimalRoute(s, n);
-         printOptimalSol(n, s.fC, route);
+         printOptimalSol(n, s.f_, route);
 
       } catch (FileNotFoundException fe) {
-         System.out.println("FILE ERROR: " + fe);
+         System.out.println("ERROR: FILE NOT FOUND");
          System.exit(1);
       } catch (Exception e) {
-         System.out.println("ERROR :" + e);
+         System.out.println("ERROR:" + e);
          System.exit(1);
       }
    }
 
+   // returned object from fastestTime func containing elemnts of optimal solution
+   static class Solution {
+      int f_, l_;
+      int[] l1, l2;
+
+      public Solution(int f_, int l_, int[] l1, int[] l2) {
+         this.f_ = f_;
+         this.l_ = l_;
+         this.l1 = l1;
+         this.l2 = l2;
+      }
+   }
+
+   // main algorithm for bottom-up iterative approach to calculate fastest time through assembly line
    public static Solution fastestTime(int[] a1, int[] a2, int[] t1, int[] t2, int[] e, int[] x, int n) {
       int[] f1 = new int[n], f2 = new int[n];
       int[] l1 = new int[n], l2 = new int[n];
-      int fC, lC;
+      int f_, l_;
       f1[0] = e[0] + a1[0];         // calculate first cells of f1 & f2
       f2[0] = e[1] + a2[0];
 
       for (int i = 1; i < n; i++) {
+         // f1
          // compare cost from l1 vs from l2 + transfer time
          if (f1[i - 1] + a1[i] <= f2[i - 1] + t2[i - 1] + a1[i]) {
             // line 1 faster
@@ -99,6 +103,7 @@ public class FactoryProblem {
             f1[i] = f2[i - 1] + t2[i - 1] + a1[i];
             l1[i] = 2;
          }
+         // f2
          if (f2[i - 1] + a2[i] <= f1[i - 1] + t1[i - 1] + a2[i]) {
             //line 2 faster
             f2[i] = f2[i - 1] + a2[i];
@@ -110,32 +115,34 @@ public class FactoryProblem {
             l2[i] = 1;
          }
       }
-      // calc exit times/solution
+      // calc & compare exit times/solution
       if (f1[n - 1] + x[0] <= f2[n - 1] + x[1]) {
-         fC = f1[n - 1] + x[0];
-         lC = 1;
+         f_ = f1[n - 1] + x[0];
+         l_ = 1;
       }
       else {
-         fC = f2[n - 1] + x[1];
-         lC = 2;
+         f_ = f2[n - 1] + x[1];
+         l_ = 2;
       }
 
-      return new Solution(fC, lC, l1, l2);
+      return new Solution(f_, l_, l1, l2);
    }
 
+   // recreates route of optimal solution
    public static int[] calcOptimalRoute(Solution s, int n) {
-      // calculate optimal route
+      // backtrack to calculate optimal route
       int[] route = new int[n + 1];
-      route[n] = s.lC;
+      route[n] = s.l_;
       for (int i = n - 1; i > 0; i--)
          route[i] = route[i + 1] == 1 ? s.l1[i] : s.l2[i];
 
       return route;
    }
 
-   public static void printOptimalSol(int n, int fC, int[] route) {
+   // prints the fastest time through assembly line and the optimal route
+   public static void printOptimalSol(int n, int f_, int[] route) {
       // print fastest time
-      System.out.println("\nFastest time is: " + fC + "\n");
+      System.out.println("\nFastest time is: " + f_ + "\n");
 
       // print route
       System.out.println("The optimal route is:");
