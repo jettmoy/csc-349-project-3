@@ -68,7 +68,7 @@ public class GameProblem {
         // build last column solutions
         // last column -> move down OR exit
         // max{𝑆[𝑖+1, 𝑚],0}+𝐴[𝑖,𝑚]
-        for (int i=m-1; i > 0; i--) {
+        for (int i=n-1; i > 0; i--) {
             if (S[i+1][m] >= 0) {
                 S[i][m] = S[i + 1][m] + A[i][m];
                 R[i][m] = 'd';
@@ -81,7 +81,7 @@ public class GameProblem {
         // build last row solutions
         // last row -> move right OR exit
         // max{𝑆[𝑛,𝑗+1],0}+𝐴[𝑛,𝑗]
-        for (int j=n-1; j>0; j--) {
+        for (int j=m-1; j>0; j--) {
             if (S[n][j+1] >= 0) {
                 S[n][j] = S[n][j + 1] + A[n][j];
                 R[n][j] = 'r';
