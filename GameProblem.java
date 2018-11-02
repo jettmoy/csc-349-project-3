@@ -15,23 +15,8 @@ public class GameProblem {
             sc.close();
             Scanner scanner = new Scanner(input);
 
-            /*
-             * Prompt the user to enter the name of the file containing the data for your
-             * problem, input the file-name and set up a scanner to read from that file. 2.
-             * Read values from the file: these are the data you will pass to game method as
-             * parameter-values. Your file content will be as follows (values on the same
-             * line will be separated by ≥1 spaces):
-             * 
-             * - the first line contains two integers:
-             *      values of n and m (i.e. number of rows and columns of A)
-             * - then n lines will
-             * follow, each containing m integers (a line represents one row of A)
-             */
-
             int n = scanner.nextInt();
             int m = scanner.nextInt();
-
-            // System.out.println("N: " + n + " M: " + m);
 
             int[][] A = new int[n + 1][m + 1];
 
@@ -53,12 +38,14 @@ public class GameProblem {
 
     static int[][] S;
     static char[][] R;
-    public static void game(int n, int m, int[][]A) {
+    static int solX = -1;
+    static int solY = -1;
+    public static void game(int n, int m, int[][] A) {
         S = new int[n + 1][m + 1];
         R = new char[n + 1][m + 1];
         find_optimal_solution(n, m, A);
         print_optimal_score();
-        // print_optimal_route();
+        print_optimal_route(n, m, A);
 
     }
 
@@ -101,7 +88,11 @@ public class GameProblem {
         
         for (int i=0; i<S.length; i++) {
             for (int j=0; j<S[0].length; j++) {
-                if (S[i][j] > optimalScore) optimalScore = S[i][j];
+                if (S[i][j] > optimalScore) {
+                    solX = j; // i think?
+                    solY = i;
+                    optimalScore = S[i][j];
+                } 
             }
         }
 
@@ -116,7 +107,28 @@ public class GameProblem {
      * – e.g. you can save “d” if the choice is to move
      * down, “r” if the choice is to move right, and “e” if you have to exit.
      */
-    private static void print_optimal_route() {
+    private static void print_optimal_route(int n, int m, int[][] A) {
+
+        int i = solY;
+        int j = solX;
+        
+        while (i<m && j<m) {
+            int previousValue = S[i][j] - A[i][j];
+
+            if (previousValue == S[i+1][j]) {
+                // downward move
+                System.out.print("d ");
+                i++;
+            }
+
+            if (previousValue == S[i][j+1]) {
+                // right move
+                System.out.print("r ");
+                j++;
+            }
+
+        }
+        System.out.print("e ");
     }
 
     private static void print_2d_int_array(int[][] A) {
