@@ -97,8 +97,9 @@ public class GameProblem {
             }
         }
 
-        print_2d_int_array(A);
-        print_2d_int_array(S);
+        // print_2d_int_array(A);
+        // print_2d_int_array(S);
+        // print_2d_char_array(R);
 
     }
 
@@ -144,7 +145,7 @@ public class GameProblem {
                     j++;
                     break;
                 case 'e':
-                    System.out.println("exit");
+                    System.out.printf("[%d,%d] to exit\n", i, j);
                     return;
             }
         }
@@ -152,6 +153,15 @@ public class GameProblem {
     }
 
     private static void print_2d_int_array(int[][] A) {
+        for (int i = 0; i < A.length; i++) {
+            for (int j = 0; j < A[0].length; j++) {
+                System.out.print(A[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    private static void print_2d_char_array(char[][] A) {
         for (int i = 0; i < A.length; i++) {
             for (int j = 0; j < A[0].length; j++) {
                 System.out.print(A[i][j] + " ");
